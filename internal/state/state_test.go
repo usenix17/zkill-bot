@@ -79,9 +79,8 @@ func TestPruneHistory(t *testing.T) {
 	s, _ := state.Load(path)
 
 	s.RecordExecution("old-entry")
-	// Manually backdating requires direct access — we test the prune boundary.
-	// Record something and immediately prune with 0 duration (removes everything).
-	s.PruneHistory(0)
+	// Prune with negative age so cutoff is in the future — removes everything.
+	s.PruneHistory(-time.Hour)
 	if s.HasExecuted("old-entry") {
 		t.Error("PruneHistory: expected old-entry to be pruned")
 	}
