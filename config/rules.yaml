@@ -1,0 +1,53 @@
+mode: first-match
+
+rules:
+  - name: "high-value-kill"
+    enabled: true
+    priority: 10
+    filter:
+      zkb_value_min: 1000000000
+    actions:
+      - type: console
+      - type: webhook
+        args:
+          template: "default"
+
+  - name: "capital-kill"
+    enabled: true
+    priority: 20
+    filter:
+      has_capital: true
+    actions:
+      - type: console
+      - type: webhook
+        args:
+          template: "capital"
+
+  - name: "corp-loss"
+    enabled: true
+    priority: 30
+    filter:
+      victim_corporation_id: [98812444]
+    actions:
+      - type: console
+      - type: webhook
+        args:
+          template: "loss"
+
+  - name: "solo-pvp"
+    enabled: true
+    priority: 40
+    filter:
+      and:
+        - solo: true
+        - npc: false
+    actions:
+      - type: console
+
+  - name: "all-kills"
+    enabled: false
+    priority: 100
+    filter:
+      npc: false
+    actions:
+      - type: console
