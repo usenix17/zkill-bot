@@ -7,7 +7,6 @@ An EVE Online killmail monitor. It watches the [zKillboard](https://zkillboard.c
 ## Requirements
 
 - [Go](https://go.dev) 1.25 or newer
-- The EVE SDE database file (`eve.db`) — included in this repository
 - A `config.yaml` file — a ready-to-edit example is included
 
 ---
@@ -166,14 +165,17 @@ sudo journalctl -u zkill-bot -f   # view logs
 
 ---
 
-## Updating the system name list
+## Updating game data
 
-The bot includes a pre-built list of all solar system names. If CCP adds new systems (e.g. after an expansion), you can regenerate it:
+All ship names, item names, and solar system names are compiled directly into the binary — no database file is needed at runtime. If CCP releases a patch that adds new items or systems, regenerate the data and rebuild:
 
 ```
-go run ./cmd/gen-systems
+go run ./cmd/gen-sde              # ship and item names from eve.db
+go run ./cmd/gen-systems          # solar system names from ESI
 go build -o zkill-bot .
 ```
+
+`eve.db` is only needed to run these generators, not to run the bot itself.
 
 ---
 

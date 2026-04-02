@@ -42,12 +42,7 @@ func main() {
 	slog.Info("rules loaded", "count", len(cfg.Rules.Rules), "mode", cfg.Rules.Mode)
 
 	// --- Enrichment ---
-	enricher, err := enrichment.New(cfg.EVEDBPath)
-	if err != nil {
-		slog.Error("startup: enrichment db failed", "error", err)
-		os.Exit(1)
-	}
-	defer enricher.Close()
+	enricher := enrichment.New()
 
 	// --- State ---
 	st, err := state.Load(cfg.StateFilePath)

@@ -1,30 +1,14 @@
 package enrichment_test
 
 import (
-	"os"
 	"testing"
 
 	"zkill-bot/internal/enrichment"
 	"zkill-bot/internal/killmail"
 )
 
-const dbPath = "../../eve.db"
-
-func skipIfNoDB(t *testing.T) {
-	t.Helper()
-	if _, err := os.Stat(dbPath); err != nil {
-		t.Skip("eve.db not found, skipping enrichment tests")
-	}
-}
-
 func TestEnrich_VictimShip(t *testing.T) {
-	skipIfNoDB(t)
-
-	e, err := enrichment.New(dbPath)
-	if err != nil {
-		t.Fatalf("New: %v", err)
-	}
-	defer e.Close()
+	e := enrichment.New()
 
 	km := &killmail.Killmail{
 		KillmailID: 1,
@@ -48,16 +32,8 @@ func TestEnrich_VictimShip(t *testing.T) {
 }
 
 func TestEnrich_CapitalDetection(t *testing.T) {
-	skipIfNoDB(t)
+	e := enrichment.New()
 
-	e, err := enrichment.New(dbPath)
-	if err != nil {
-		t.Fatalf("New: %v", err)
-	}
-	defer e.Close()
-
-	// typeID 671 is a well-known Titan (Avatar), groupID 30
-	// Use a known Titan typeID: Avatar = 11567
 	km := &killmail.Killmail{
 		KillmailID: 2,
 		SequenceID: 2,
@@ -74,13 +50,7 @@ func TestEnrich_CapitalDetection(t *testing.T) {
 }
 
 func TestEnrich_UnknownTypeID(t *testing.T) {
-	skipIfNoDB(t)
-
-	e, err := enrichment.New(dbPath)
-	if err != nil {
-		t.Fatalf("New: %v", err)
-	}
-	defer e.Close()
+	e := enrichment.New()
 
 	km := &killmail.Killmail{
 		KillmailID: 3,
@@ -90,7 +60,6 @@ func TestEnrich_UnknownTypeID(t *testing.T) {
 		},
 	}
 
-	// Must not panic; enriched data should be empty but present
 	e.Enrich(km)
 
 	if km.Enriched == nil {
@@ -101,5 +70,21 @@ func TestEnrich_UnknownTypeID(t *testing.T) {
 	}
 	if km.Enriched.HasCapital {
 		t.Error("HasCapital: expected false for unknown typeID")
+	}
+}
+
+func TestEnrich_SolarSystemName(t *testing.T) {
+	e := enrichment.New()
+
+	km := &killmail.Killmail{
+		KillmailID:    4,
+		SequenceID:    4,
+		SolarSystemID: 30000142, // Jita
+	}
+
+	e.Enrich(km)
+
+	if km.Enriched.SolarSystemName != "Jita" {
+		t.Errorf("SolarSystemName: got %q, want %q", km.Enriched.SolarSystemName, "Jita")
 	}
 }

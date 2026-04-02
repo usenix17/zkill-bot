@@ -1,6 +1,5 @@
 # zkill-bot configuration
 
-eve_db_path: ./eve.db
 state_file_path: ./state.json
 debug: false
 
@@ -31,7 +30,7 @@ rules:
         - type: console
         - type: webhook
           args:
-            url: "https://discord.com/api/webhooks/1483747598366933086/pWrFA3uCmPOEJjenNoZdI3k3ZC5Rq7N7STdRnNjBbh0ScPkY-9SHEeB_btPCa8uaXoy-"
+            url: "https://some-webhook"
             template: "default"
 
     - name: "capital-kill"
@@ -43,7 +42,7 @@ rules:
         - type: console
         - type: webhook
           args:
-            url: "https://discord.com/api/webhooks/1483747598366933086/pWrFA3uCmPOEJjenNoZdI3k3ZC5Rq7N7STdRnNjBbh0ScPkY-9SHEeB_btPCa8uaXoy-"
+            url: "https://some-webhook"
             template: "capital"
 
     - name: "corp-loss"
@@ -55,7 +54,7 @@ rules:
         - type: console
         - type: webhook
           args:
-            url: "https://discord.com/api/webhooks/1483747598366933086/pWrFA3uCmPOEJjenNoZdI3k3ZC5Rq7N7STdRnNjBbh0ScPkY-9SHEeB_btPCa8uaXoy-"
+            url: "https://some-webhook"
             template: "loss"
 
     - name: "solo-pvp"
@@ -69,7 +68,7 @@ rules:
         - type: console
         - type: webhook
           args:
-            url: "https://discord.com/api/webhooks/1483747598366933086/pWrFA3uCmPOEJjenNoZdI3k3ZC5Rq7N7STdRnNjBbh0ScPkY-9SHEeB_btPCa8uaXoy-"
+            url: "https://some-webhook"
             template: "default"
 
     - name: "jita-trade-hub-kill"
@@ -84,7 +83,7 @@ rules:
         - type: console
         - type: webhook
           args:
-            url: "https://discord.com/api/webhooks/1483747598366933086/pWrFA3uCmPOEJjenNoZdI3k3ZC5Rq7N7STdRnNjBbh0ScPkY-9SHEeB_btPCa8uaXoy-"
+            url: "https://some-webhook"
             template: "default"
 
     - name: "all-kills"

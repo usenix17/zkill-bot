@@ -31,22 +31,14 @@ func TestPipeline_EndToEnd(t *testing.T) {
 		t.Errorf("KillmailID: got %d", km.KillmailID)
 	}
 
-	// --- Enrich (skip if eve.db not present) ---
-	const dbPath = "eve.db"
-	if _, statErr := os.Stat(dbPath); statErr == nil {
-		enricher, err := enrichment.New(dbPath)
-		if err != nil {
-			t.Fatalf("enrichment.New: %v", err)
-		}
-		defer enricher.Close()
-		enricher.Enrich(km)
+	// --- Enrich ---
+	enrichment.New().Enrich(km)
 
-		if km.Enriched == nil {
-			t.Fatal("Enriched: nil after enrichment")
-		}
-		if km.Enriched.VictimShipName == "" {
-			t.Error("VictimShipName: expected non-empty after enrichment")
-		}
+	if km.Enriched == nil {
+		t.Fatal("Enriched: nil after enrichment")
+	}
+	if km.Enriched.VictimShipName == "" {
+		t.Error("VictimShipName: expected non-empty after enrichment")
 	}
 
 	// --- Evaluate rules (match solo-pvp: solo=false on fixture, use value rule) ---

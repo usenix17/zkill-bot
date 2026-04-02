@@ -15,9 +15,6 @@ import (
 
 // Config holds all runtime configuration loaded from a YAML file.
 type Config struct {
-	// EVE SDE enrichment
-	EVEDBPath string `yaml:"eve_db_path"`
-
 	// State persistence
 	StateFilePath string `yaml:"state_file_path"`
 
@@ -81,9 +78,6 @@ func Load(path string) (*Config, error) {
 }
 
 func applyDefaults(c *Config) {
-	if c.EVEDBPath == "" {
-		c.EVEDBPath = "./eve.db"
-	}
 	if c.StateFilePath == "" {
 		c.StateFilePath = "./state.json"
 	}
@@ -110,9 +104,6 @@ func applyDefaults(c *Config) {
 func validate(c *Config) []string {
 	var errs []string
 
-	if _, err := os.Stat(c.EVEDBPath); err != nil {
-		errs = append(errs, fmt.Sprintf("eve_db_path=%q: file not found", c.EVEDBPath))
-	}
 	if _, err := url.ParseRequestURI(c.R2Z2BaseURL); err != nil {
 		errs = append(errs, fmt.Sprintf("r2z2_base_url=%q: invalid URL", c.R2Z2BaseURL))
 	}
