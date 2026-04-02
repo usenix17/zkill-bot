@@ -1,0 +1,52 @@
+{
+  "killmail_id": 134435757,
+  "hash": "1ba1415b43277358eeca2735367d5de36b007c69",
+  "esi": {
+    "killmail_id": 134435757,
+    "killmail_time": "2026-04-02T06:40:33Z",
+    "solar_system_id": 30000186,
+    "attackers": [
+      {
+        "character_id": 2115668403,
+        "corporation_id": 98032504,
+        "alliance_id": 99004804,
+        "damage_done": 458,
+        "final_blow": true,
+        "security_status": -10,
+        "ship_type_id": 37456,
+        "weapon_type_id": 60478
+      }
+    ],
+    "victim": {
+      "character_id": 2114529076,
+      "corporation_id": 1000168,
+      "ship_type_id": 670,
+      "damage_taken": 458,
+      "position": {
+        "x": -4364176711771.96,
+        "y": -139561570861.69183,
+        "z": 113157861078.42679
+      },
+      "items": [
+        {"flag": 89, "item_type_id": 27187, "quantity_destroyed": 1, "singleton": 0},
+        {"flag": 89, "item_type_id": 27188, "quantity_destroyed": 1, "singleton": 0}
+      ]
+    }
+  },
+  "zkb": {
+    "locationID": 50013452,
+    "hash": "1ba1415b43277358eeca2735367d5de36b007c69",
+    "fittedValue": 10000,
+    "droppedValue": 0,
+    "destroyedValue": 627868229.1,
+    "totalValue": 627868229.1,
+    "points": 1,
+    "npc": false,
+    "solo": false,
+    "awox": false,
+    "attackerCount": 1,
+    "labels": ["tz:usw", "cat:6", "#:1", "pvp", "loc:lowsec"]
+  },
+  "uploaded_at": 1775112083,
+  "sequence_id": 96724073
+}
