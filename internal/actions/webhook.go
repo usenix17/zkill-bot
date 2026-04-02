@@ -121,10 +121,15 @@ func buildEmbed(km *killmail.Killmail, template string) discordEmbed {
 		Footer: &embedFooter{Text: fmt.Sprintf("Kill #%d", km.KillmailID)},
 	}
 
+	sysName := fmt.Sprintf("%d", km.SolarSystemID)
+	if km.Enriched != nil && km.Enriched.SolarSystemName != "" {
+		sysName = km.Enriched.SolarSystemName
+	}
+
 	embed.Fields = []embedField{
 		{Name: "Value", Value: formatISK(km.ZKB.TotalValue), Inline: true},
 		{Name: "Attackers", Value: fmt.Sprintf("%d", km.AttackerCount), Inline: true},
-		{Name: "System", Value: fmt.Sprintf("%d", km.SolarSystemID), Inline: true},
+		{Name: "System", Value: sysName, Inline: true},
 	}
 
 	// Add attacker ship info for capital template

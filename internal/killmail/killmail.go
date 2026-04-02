@@ -75,7 +75,8 @@ type EnrichedData struct {
 	AttackerShips []ShipInfo
 	ItemNames     []string // parallel slice to Killmail.Items
 
-	HasCapital bool
+	HasCapital     bool
+	SolarSystemName string
 }
 
 // ShipInfo holds enriched type data for a single ship.

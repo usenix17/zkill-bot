@@ -65,6 +65,9 @@ func (e *Enricher) Close() error {
 func (e *Enricher) Enrich(km *killmail.Killmail) {
 	ed := &killmail.EnrichedData{}
 
+	// Solar system name (static map, no DB hit)
+	ed.SolarSystemName = solarSystemNames[km.SolarSystemID]
+
 	// Victim ship
 	if ti := e.lookup(km.Victim.ShipTypeID); ti != nil {
 		ed.VictimShipName = ti.typeName

@@ -46,7 +46,7 @@ func (ConsoleAction) Execute(_ context.Context, km *killmail.Killmail, _ map[str
 	}
 
 	sb.WriteString(fmt.Sprintf(
-		"[%s] Kill #%d | %s | Victim: Corp:%d | Ship: %s | Attackers: %d | Value: %s | System: %d | FinalBlow: %d%s\n",
+		"[%s] Kill #%d | %s | Victim: Corp:%d | Ship: %s | Attackers: %d | Value: %s | System: %s | FinalBlow: %d%s\n",
 		km.KillmailTime.Format("2006-01-02T15:04:05Z"),
 		km.KillmailID,
 		zkbURL(km.KillmailID),
@@ -54,13 +54,20 @@ func (ConsoleAction) Execute(_ context.Context, km *killmail.Killmail, _ map[str
 		shipName,
 		km.AttackerCount,
 		value,
-		km.SolarSystemID,
+		systemName(km),
 		finalBlowChar,
 		flagStr,
 	))
 
 	fmt.Print(sb.String())
 	return nil
+}
+
+func systemName(km *killmail.Killmail) string {
+	if km.Enriched != nil && km.Enriched.SolarSystemName != "" {
+		return km.Enriched.SolarSystemName
+	}
+	return fmt.Sprintf("%d", km.SolarSystemID)
 }
 
 func zkbURL(killmailID int64) string {
