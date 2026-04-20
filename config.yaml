@@ -16,7 +16,6 @@ retry_max_backoff_ms: 10000
 # Observability — set alert_webhook_url to receive startup/shutdown pings
 metrics_log_interval_ms: 60000
 alert_webhook_url: ""
-thera_wormhole_url: ""
 
 # Rules
 rules:
@@ -82,6 +81,17 @@ rules:
           - npc: false
       actions:
         - type: console
+        - type: webhook
+          args:
+            url: "https://some-webhook"
+            template: "default"
+
+    - name: "thera-connected-kill"
+      enabled: false
+      priority: 5
+      filter:
+        thera_wormhole: true
+      actions:
         - type: webhook
           args:
             url: "https://some-webhook"
