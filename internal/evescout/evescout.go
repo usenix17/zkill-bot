@@ -16,10 +16,22 @@ const (
 
 // Signature is a single wormhole connection returned by the Eve Scout API.
 type Signature struct {
-	InSystemName  string `json:"in_system_name"`
+	WHType        string  `json:"wh_type"`
+	MaxShipSize   string  `json:"max_ship_size"`
+	ExpiresAt     string  `json:"expires_at"`
+	RemainingHours float64 `json:"remaining_hours"`
+	SignatureType string  `json:"signature_type"`
+
+	OutSystemID   int64  `json:"out_system_id"`
 	OutSystemName string `json:"out_system_name"`
-	WHType        string `json:"wh_type"`
-	MaxShipSize   string `json:"max_ship_size"`
+	OutSignature  string `json:"out_signature"`
+
+	InSystemID    int64  `json:"in_system_id"`
+	InSystemClass string `json:"in_system_class"`
+	InSystemName  string `json:"in_system_name"`
+	InRegionID    int64  `json:"in_region_id"`
+	InRegionName  string `json:"in_region_name"`
+	InSignature   string `json:"in_signature"`
 }
 
 // Client fetches and caches Eve Scout wormhole signatures.
@@ -41,17 +53,17 @@ func (c *Client) FetchAll() ([]Signature, error) {
 	return c.fetch()
 }
 
-// Lookup returns the out_system_name values for any signature whose
-// in_system_name matches the given solar system name (case-insensitive).
-func (c *Client) Lookup(systemName string) ([]string, error) {
+// Lookup returns all signatures whose in_system_name matches the given solar
+// system name (case-insensitive).
+func (c *Client) Lookup(systemName string) ([]Signature, error) {
 	sigs, err := c.fetch()
 	if err != nil {
 		return nil, err
 	}
-	var out []string
+	var out []Signature
 	for _, s := range sigs {
 		if strings.EqualFold(s.InSystemName, systemName) {
-			out = append(out, s.OutSystemName)
+			out = append(out, s)
 		}
 	}
 	return out, nil

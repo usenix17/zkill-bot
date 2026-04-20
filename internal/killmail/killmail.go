@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"time"
+
+	"zkill-bot/internal/evescout"
 )
 
 // Killmail is the canonical internal representation of a killmail event.
@@ -78,9 +80,9 @@ type EnrichedData struct {
 	HasCapital      bool
 	SolarSystemName string
 
-	// WormholeConnections lists out_system_name values from Eve Scout for
-	// signatures whose in_system_name matches this kill's solar system.
-	WormholeConnections []string
+	// WormholeConnections lists Eve Scout signatures whose in_system_name
+	// matches this kill's solar system.
+	WormholeConnections []evescout.Signature
 }
 
 // ShipInfo holds enriched type data for a single ship.

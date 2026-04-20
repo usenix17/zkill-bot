@@ -3,12 +3,10 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
-	"strings"
 	"sync/atomic"
 	"syscall"
 	"time"
@@ -102,12 +100,6 @@ func main() {
 	// --- Startup notification ---
 	notifier.NotifyStartup(ctx, startSeq)
 
-	// --- Eve Scout startup check ---
-	// Alert if any watched solar systems (from solar_system_name filters) have
-	// active Thera/Turnur wormhole connections right now.
-	theraNotifier := metrics.NewNotifier(cfg.TheraWormholeWebhookURL, httpClient)
-	checkWormholesAtStartup(ctx, esClient, &cfg.Rules, theraNotifier)
-
 	// --- Poll loop ---
 	rawCh := make(chan []byte, 32)
 	go p.Run(ctx, startSeq, rawCh)
@@ -138,41 +130,6 @@ shutdown:
 	slog.Info("zkill-bot stopped")
 }
 
-func checkWormholesAtStartup(ctx context.Context, es *evescout.Client, rf *rules.RuleFile, notifier *metrics.Notifier) {
-	watchedSystems := rules.ExtractSolarSystemNames(rf)
-	if len(watchedSystems) == 0 {
-		return
-	}
-
-	sigs, err := es.FetchAll()
-	if err != nil {
-		slog.Warn("startup: evescout fetch failed", "error", err)
-		return
-	}
-
-	// Index watched systems for O(1) lookup.
-	watched := make(map[string]bool, len(watchedSystems))
-	for _, name := range watchedSystems {
-		watched[strings.ToLower(name)] = true
-	}
-
-	var lines []string
-	for _, sig := range sigs {
-		if watched[strings.ToLower(sig.InSystemName)] {
-			lines = append(lines, fmt.Sprintf("**%s** → %s (type: %s, max ship: %s)",
-				sig.InSystemName, sig.OutSystemName, sig.WHType, sig.MaxShipSize))
-		}
-	}
-
-	if len(lines) == 0 {
-		return
-	}
-
-	msg := "Wormhole alert: watched systems with active Thera/Turnur connections:\n" +
-		strings.Join(lines, "\n")
-	slog.Info("startup: wormhole connections found for watched systems", "count", len(lines))
-	notifier.Notify(ctx, msg)
-}
 
 func processKillmail(
 	ctx context.Context,
@@ -195,10 +152,10 @@ func processKillmail(
 	enricher.Enrich(km)
 
 	if km.Enriched != nil && km.Enriched.SolarSystemName != "" {
-		if conns, err := es.Lookup(km.Enriched.SolarSystemName); err != nil {
+		if sigs, err := es.Lookup(km.Enriched.SolarSystemName); err != nil {
 			slog.Warn("evescout: lookup failed", "system", km.Enriched.SolarSystemName, "error", err)
 		} else {
-			km.Enriched.WormholeConnections = conns
+			km.Enriched.WormholeConnections = sigs
 		}
 	}
 

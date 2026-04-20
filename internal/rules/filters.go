@@ -53,6 +53,10 @@ type FilterNode struct {
 	// Capital
 	HasCapital *bool `yaml:"has_capital"`
 
+	// Thera/Turnur wormhole — true if the kill's solar system has an active
+	// Eve Scout connection at the time the killmail is processed.
+	TheraWormhole *bool `yaml:"thera_wormhole"`
+
 	// Value
 	ZKBValueMin *float64 `yaml:"zkb_value_min"`
 	ZKBValueMax *float64 `yaml:"zkb_value_max"`
@@ -192,6 +196,14 @@ func matchFilter(km *killmail.Killmail, f *FilterNode) bool {
 	// Item filter
 	if len(f.ItemTypeID) > 0 && !anyItemMatch(km, f.ItemTypeID) {
 		return false
+	}
+
+	// Thera/Turnur wormhole
+	if f.TheraWormhole != nil {
+		has := km.Enriched != nil && len(km.Enriched.WormholeConnections) > 0
+		if has != *f.TheraWormhole {
+			return false
+		}
 	}
 
 	// Capital

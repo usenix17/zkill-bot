@@ -42,7 +42,16 @@ func (ConsoleAction) Execute(_ context.Context, km *killmail.Killmail, _ map[str
 
 	whStr := ""
 	if km.Enriched != nil && len(km.Enriched.WormholeConnections) > 0 {
-		whStr = " | WH→" + strings.Join(km.Enriched.WormholeConnections, ", ")
+		parts := make([]string, 0, len(km.Enriched.WormholeConnections))
+		for _, sig := range km.Enriched.WormholeConnections {
+			parts = append(parts, fmt.Sprintf("%s→%s [%s/%s, %s, %.0fh]",
+				sig.InSignature, sig.OutSignature,
+				sig.WHType, sig.MaxShipSize,
+				sig.OutSystemName,
+				sig.RemainingHours,
+			))
+		}
+		whStr = " | WH: " + strings.Join(parts, "; ")
 	}
 
 	finalBlowChar := int64(0)
