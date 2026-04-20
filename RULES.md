@@ -98,7 +98,7 @@ The `filter:` block describes what a killmail must look like to match the rule. 
 | `npc: true`              | `true` / `false` | The kill involved NPCs                                                                   |
 | `awox: true`             | `true` / `false` | The victim was killed by their own corp                                                  |
 | `has_capital: true`      | `true` / `false` | A capital ship (Titan, Dreadnought, Carrier, Supercarrier, Force Auxiliary) was involved |
-| `thera_wormhole: true`   | `true` / `false` | The kill's solar system has an active Thera or Turnur wormhole connection (via Eve Scout) |
+| `thera_wormhole: ["Thera", "Turnur"]` | list of hub names | The kill's solar system has an active Eve Scout connection to any of the listed hubs |
 
 ```yaml
 filter:
@@ -391,14 +391,14 @@ Read this as: _"Value at least 500M ISK, AND (in Jita or Amarr OR involves a cap
 
 ### Kill in a system with a Thera or Turnur wormhole
 
-Alerts when a kill happens in a system that currently has an active wormhole connection to Thera or Turnur according to [Eve Scout](https://eve-scout.com). The connection details (signature IDs, wormhole type, max ship size, remaining hours) are included in the notification.
+Alerts when a kill happens in a system that currently has an active wormhole connection to one of the listed hub systems, according to [Eve Scout](https://eve-scout.com). The connection details (signature IDs, wormhole type, max ship size, remaining hours) are included in the notification.
 
 ```yaml
 - name: "thera-connected-kill"
   enabled: true
   priority: 5
   filter:
-    thera_wormhole: true
+    thera_wormhole: ["Thera", "Turnur"]
   actions:
     - type: webhook
       args:
@@ -406,17 +406,24 @@ Alerts when a kill happens in a system that currently has an active wormhole con
         template: "default"
 ```
 
-Combine with other filters to narrow it down — for example, only high-value kills in Thera-connected systems:
+To only alert on Thera connections (ignoring Turnur), use a single-entry list:
+
+```yaml
+filter:
+  thera_wormhole: ["Thera"]
+```
+
+Combine with other filters — for example, only high-value kills in Thera-connected systems:
 
 ```yaml
 filter:
   and:
-    - thera_wormhole: true
+    - thera_wormhole: ["Thera", "Turnur"]
     - zkb_value_min: 500000000
     - npc: false
 ```
 
-> **Note:** Wormhole data is fetched live from `api.eve-scout.com` and cached for 5 minutes. The filter reflects connections that were active at the time the killmail was processed.
+> **Note:** Wormhole data is fetched from `api.eve-scout.com` at startup and then refreshed every 5 minutes in the background (configurable via `evescout_poll_interval_ms`). The filter reflects whichever connections were active at the last refresh.
 
 ---
 

@@ -33,6 +33,9 @@ type Config struct {
 	RetryBaseBackoffMS int `yaml:"retry_base_backoff_ms"`
 	RetryMaxBackoffMS  int `yaml:"retry_max_backoff_ms"`
 
+	// Eve Scout
+	EveScoutPollIntervalMS int `yaml:"evescout_poll_interval_ms"`
+
 	// Observability
 	Debug                   bool   `yaml:"debug"`
 	MetricsLogIntervalMS    int    `yaml:"metrics_log_interval_ms"`
@@ -49,7 +52,8 @@ func (c *Config) PollInterval() time.Duration   { return ms(c.PollIntervalMS, 10
 func (c *Config) Poll404Backoff() time.Duration  { return ms(c.Poll404BackoffMS, 6000) }
 func (c *Config) RetryBaseBackoff() time.Duration { return ms(c.RetryBaseBackoffMS, 250) }
 func (c *Config) RetryMaxBackoff() time.Duration  { return ms(c.RetryMaxBackoffMS, 10000) }
-func (c *Config) MetricsLogInterval() time.Duration { return ms(c.MetricsLogIntervalMS, 60000) }
+func (c *Config) MetricsLogInterval() time.Duration    { return ms(c.MetricsLogIntervalMS, 60000) }
+func (c *Config) EveScoutPollInterval() time.Duration { return ms(c.EveScoutPollIntervalMS, 300000) }
 
 func ms(v, def int) time.Duration {
 	if v <= 0 {

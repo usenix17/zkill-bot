@@ -72,6 +72,7 @@ func main() {
 
 	// --- Eve Scout wormhole client ---
 	esClient := evescout.New(httpClient)
+	esClient.StartPoller(ctx, cfg.EveScoutPollInterval())
 
 	// --- Action dispatcher ---
 	dispatcher := actions.NewDispatcher(
@@ -152,11 +153,7 @@ func processKillmail(
 	enricher.Enrich(km)
 
 	if km.Enriched != nil && km.Enriched.SolarSystemName != "" {
-		if sigs, err := es.Lookup(km.Enriched.SolarSystemName); err != nil {
-			slog.Warn("evescout: lookup failed", "system", km.Enriched.SolarSystemName, "error", err)
-		} else {
-			km.Enriched.WormholeConnections = sigs
-		}
+		km.Enriched.WormholeConnections = es.Lookup(km.Enriched.SolarSystemName)
 	}
 
 	matches := rules.Evaluate(km, rf)

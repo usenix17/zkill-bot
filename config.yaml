@@ -13,6 +13,9 @@ retry_max_retries: 3
 retry_base_backoff_ms: 250
 retry_max_backoff_ms: 10000
 
+# Eve Scout wormhole polling (milliseconds, default 5 minutes)
+evescout_poll_interval_ms: 300000
+
 # Observability — set alert_webhook_url to receive startup/shutdown pings
 metrics_log_interval_ms: 60000
 alert_webhook_url: ""
@@ -90,7 +93,7 @@ rules:
       enabled: false
       priority: 5
       filter:
-        thera_wormhole: true
+        thera_wormhole: ["Thera", "Turnur"]
       actions:
         - type: webhook
           args:
